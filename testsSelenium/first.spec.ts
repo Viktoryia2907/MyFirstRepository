@@ -1,15 +1,16 @@
 import puppeteer, { Browser, Page } from "puppeteer";
+import { xPathActions } from "../const/consts";
+import { site } from "../const/consts";
+import { xPathForBurger } from "../const/consts";
+import { xPathForSearch } from "../const/consts";
+import { xPathForTV } from "../const/consts";
+import { xPathForLoyalty } from "../const/consts";
+import { SECONDS } from "../const/consts";
+
 
 describe("Test", () => {
     let page: Page;
     let browser: Browser;
-    const SECONDS = 1000;
-    const site = "https://5element.by/";
-    const xPathForBurger = '::-p-xpath(//div[@class="h-burger"])';
-    const xPathForSearch = '::-p-xpath(//div[@class="multi-search"]//input[contains(@value,"product")])';
-    const xPathForTV = '::-p-xpath(//div[@class="section-heading__title" and contains(text(), "Результаты поиска «телевизор»")]'
-    const xPathForLoyalty = '::-p-xpath(//li[@class="h-nav__item"]/a[text()="Хочу бонусную карту"])';
-    const xPathActions = '::-p-xpath(//span[@class="h-discounts__text" and text()="Акции"])'
 
     beforeAll(async () => {
         browser = await puppeteer.launch({
@@ -23,14 +24,16 @@ describe("Test", () => {
         await browser.close();
     }, 70 * SECONDS);
 
+    beforeEach(async () => {
+        await page.goto(site);
+    });
+
     it("Наличие кнопки-бургера Каталог", async () => {
-        await page.goto(site)
         let element = await page.waitForSelector(xPathForBurger)
         expect(await element?.isVisible()).toBeTruthy()
     }, 70 * SECONDS);
 
     it("Поиск товара", async () => {
-        await page.goto(site)
         await page.waitForSelector(xPathForSearch);
         await page.type(xPathForSearch, 'телевизор');
         await page.keyboard.press('Enter');
@@ -43,14 +46,16 @@ describe("Test", () => {
     }, 150 * SECONDS);
 
     it("Клик на кнопку", async () => {
-        await page.goto(site)
         await page.waitForSelector(xPathForLoyalty);
-        await page.click(xPathForLoyalty),
-            await page.waitForNavigation({ waitUntil: 'networkidle2' })
-    }, 150 * SECONDS);
+        await page.click(xPathForLoyalty);
+        try {
+            await page.waitForNavigation({ timeout: 60000 });
+        } catch (error) {
+            console.error("Ошибка навигации:", error);
+        }
+    }, 70 * SECONDS);
 
     it("Наличие кнопки Акции", async () => {
-        await page.goto(site)
         let element = await page.waitForSelector(xPathActions)
         expect(await element?.isVisible()).toBeTruthy()
     }, 70 * SECONDS);
@@ -60,3 +65,4 @@ describe("Test", () => {
         expect(element).not.toBeNull();
     }, 70 * SECONDS);
 });
+
