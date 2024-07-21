@@ -1,1 +1,1 @@
-export const notEqualMessage = 'Result not equal'
+export const notEqualMessage = 'Result not equal';

@@ -4,19 +4,28 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
-    "testmocha": "mocha"
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@types/jest": "^29.5.12",
-    "@types/mocha": "^10.0.7",
-    "@types/node": "^20.14.9",
-    "jest": "^29.7.0",
-    "mocha": "^10.6.0",
+    "@types/node": "^20.14.10",
+    "@types/selenium-webdriver": "^4.1.24",
+    "chromedriver": "^126.0.4",
+    "puppeteer-core": "^22.13.1",
+    "selenium-webdriver": "^4.22.0",
     "ts-jest": "^29.1.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.3"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-jest": "^29.7.0",
+    "babel-preset-env": "^1.7.0",
+    "faker": "^6.6.6",
+    "jest": "^29.7.0",
+    "jest-puppeteer": "^10.0.1",
+    "puppeteer": "^22.13.1"
   }
 }
