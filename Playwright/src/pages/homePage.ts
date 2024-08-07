@@ -1,17 +1,17 @@
 import { Page } from '@playwright/test';
+import { BasePage } from './BasePage';
 import { NavigationBar } from '../elements/navigationBar';
+import { URLS } from '../../const/consts';
 
-
-export class HomePage {
-  private page: Page;
+export class HomePage extends BasePage {
   private homeURL: string;
   private mainBanner: string;
   public navigationBar: NavigationBar;
 
   constructor(page: Page) {
-    this.page = page;
+    super(page);
     this.navigationBar = new NavigationBar(page);
-    this.homeURL = 'https://5element.by';
+    this.homeURL = URLS.BASE_URL;
     this.mainBanner = '.swiper-slide-active';
   }
 
@@ -20,9 +20,6 @@ export class HomePage {
   }
 
   async verifyMainBanner(): Promise<void> {
-    const bannerVisible = await this.page.isVisible(this.mainBanner);
-    if (!bannerVisible) {
-      throw new Error('Main banner is not visible');
-    }
+    await this.verifyElementVisible(this.mainBanner, 'Главный баннер не виден');
   }
 }

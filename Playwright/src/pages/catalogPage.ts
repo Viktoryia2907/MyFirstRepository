@@ -1,30 +1,28 @@
 import { Page } from '@playwright/test';
+import { BasePage } from './BasePage';
 
-export class CatalogPage {
-    private page: Page;
+export class CatalogPage extends BasePage {
     private catalogButtonActive: string;
     private catalogBurgerActive: string;
 
-
     constructor(page: Page) {
-        this.page = page;
+        super(page);
         this.catalogButtonActive = '.js-mm-opener.btn.active';
         this.catalogBurgerActive = 'button.js-mm-opener.btn';
-
-
     }
 
     async verifyCatalogButtonActive(): Promise<void> {
-        const catalogButtonActiveVisible = await this.page.isVisible(this.catalogButtonActive);
-        if (!catalogButtonActiveVisible) {
-            throw new Error('Catalog button active is not visible');
-        }
+        await this.verifyElementVisible(this.catalogButtonActive, 'Активная кнопка каталога не видна');
     }
 
     async verifyCatalogBurgerActive(): Promise<void> {
-        const verifyCatalogBurgerActiveVisible = await this.page.isVisible(this.catalogBurgerActive);
-        if (!verifyCatalogBurgerActiveVisible) {
-            throw new Error('Catalog burger active is not visible');
-        }
+        await this.verifyElementVisible(this.catalogBurgerActive, 'Активный бургер каталога не виден');
+    }
+
+    async clickAndVerifyComparison(page: any) {
+        await page.click('.n-item__icon.ic-compare');
+        const textElementCompare = await page.waitForSelector('.h-drop__content p');
+        const textCompare = await textElementCompare.innerText();
+        return textCompare;
     }
 }

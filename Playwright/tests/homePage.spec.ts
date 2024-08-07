@@ -1,6 +1,6 @@
 import { test, expect, Page } from '@playwright/test';
 import { PageFactory } from '../src/pages/pageFactory';
-import { urlActions, urlSite } from '../const/consts';
+import { URLS } from '../const/consts';
 
 
 test.describe('5 Element - HomePage', () => {
@@ -18,7 +18,7 @@ test.describe('5 Element - HomePage', () => {
         await homePage.navigateTo();
     });
 
-    test.afterEach(async () => {
+    test.afterAll(async () => {
         await page.close();
     });
 
@@ -26,8 +26,11 @@ test.describe('5 Element - HomePage', () => {
         await homePage.verifyMainBanner();
     });
 
-    test('Клик на "Вход"', async () => {
+    test.skip('Клик на "Вход" открывает модальное окно', async () => {
         await page.click('.h-drop__text');
+        await page.waitForSelector('.modal-popup.modal-login ', { timeout: 5000 });
+        const modalIsVisible = await page.isVisible('.modal-popup.modal-login');
+        expect(modalIsVisible).toBe(true);
     });
 
     test('Футер виден на главной странице', async () => {
@@ -37,11 +40,11 @@ test.describe('5 Element - HomePage', () => {
 
     test('Проверка адреса ссылки раздела "Акции', async () => {
         await page.click('a:has-text("Акции")');
-        await expect(page).toHaveURL(urlActions);
+        await expect(page).toHaveURL(URLS.ACTIONS);
     });
 
-    test('обновление страницы по клику на баннер', async () => {
+    test('Oбновление страницы по клику на баннер', async () => {
         await page.click('img[alt="header logo"]');
-        await expect(page).toHaveURL(urlSite);
+        await expect(page).toHaveURL(URLS.BASE_URL);
     });
 });

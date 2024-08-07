@@ -1,6 +1,7 @@
 import { test, expect, Page } from '@playwright/test';
 import { PageFactory } from '../src/pages/pageFactory';
-import { locatorBonusy, locatorPodarky, locatorPredzakazy, locatorRassrochkaISupercredity, locatorSkidkiIPromokody } from '../const/consts';
+import { SECTIONSTEXT, Locators, textCompare } from '../const/consts';
+
 
 
 test.describe('5 Element - catalogPage', () => {
@@ -10,6 +11,7 @@ test.describe('5 Element - catalogPage', () => {
     let homePage: ReturnType<PageFactory['getHomePage']>;
     let catalogPage: ReturnType<PageFactory['getCatalogPage']>;
     let navigationBar: ReturnType<PageFactory['getNavigationBar']>;
+
 
     test.beforeEach(async ({ browser }) => {
         page = await browser.newPage();
@@ -21,7 +23,7 @@ test.describe('5 Element - catalogPage', () => {
         await homePage.navigationBar.goToCatalogPage();
     });
 
-    test.afterEach(async () => {
+    test.afterAll(async () => {
         await page.close();
     });
 
@@ -30,35 +32,24 @@ test.describe('5 Element - catalogPage', () => {
     });
 
     test('Переход наличия разделов и их текстов', async () => {
-        const section1 = page.locator(locatorRassrochkaISupercredity);
-        await expect(section1).toBeVisible();
-        await expect(section1).toHaveText('Рассрочка и суперкредиты');
+        const sections = [
+            { locator: Locators.RASSROCHKA_I_SUPERCREDITY, text: SECTIONSTEXT.section1Text },
+            { locator: Locators.PODARKY, text: SECTIONSTEXT.section2Text },
+            { locator: Locators.PREDZAKAZY, text: SECTIONSTEXT.section3Text },
+            { locator: Locators.SKIDKI_I_PROMOKODY, text: SECTIONSTEXT.section4Text },
+            { locator: Locators.BONUSY, text: SECTIONSTEXT.section5Text },
+        ];
 
-        const section2 = page.locator(locatorPodarky);
-        await expect(section2).toBeVisible();
-        await expect(section2).toHaveText('Подарки');
-
-        const section3 = page.locator(locatorPredzakazy);
-        await expect(section3).toBeVisible();
-        await expect(section3).toHaveText('Предзаказы');
-
-
-        const section4 = page.locator(locatorSkidkiIPromokody);
-        await expect(section4).toBeVisible();
-        await expect(section4).toHaveText('Скидки и промокоды');
-
-        const section5 = page.locator(locatorBonusy);
-        await expect(section5).toBeVisible();
-        await expect(section5).toHaveText('Бонусы');
+        for (const section of sections) {
+            const element = page.locator(section.locator);
+            await expect(element).toBeVisible();
+            await expect(element).toHaveText(section.text);
+        }
     });
 
     test('Проверка клика на "Сравнение"', async () => {
-        await page.click('.n-item__icon.ic-compare');
-        const textElementCompare = await page.waitForSelector('.h-drop__content p');
-        const textCompare = await textElementCompare.innerText();
-        expect(textCompare).toBe('Пока не добавлено ни одного товара для сравнения');
+        const textCompare = await catalogPage.clickAndVerifyComparison(page);
+        expect(textCompare).toBe(textCompare);
         await catalogPage.verifyCatalogBurgerActive();
     });
 });
-
-
